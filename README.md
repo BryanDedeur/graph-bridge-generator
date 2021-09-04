@@ -9,7 +9,7 @@ It can be used to generate an arbitrary large dataset of bridge-graphs of desire
 
 ### Dependencies
 
-* [Python3](https://www.python.org/downloads/) This code runs has successfully ran with various versions of Python. Alternate versions of Python may work but I cannot guarantee flawless execution.
+* [Python3](https://www.python.org/downloads/) This code runs successfully with various versions of Python. Alternate versions of Python may work but I cannot guarantee flawless execution.
 * [MatPlotLib](https://matplotlib.org/stable/users/installing.html)
 ```
 python -m pip install -U pip
