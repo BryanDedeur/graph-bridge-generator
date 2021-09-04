@@ -1,14 +1,41 @@
-# Graph-and-Bridge-Generator
-Created for University of Nevada, Reno's Evolutionary Computing Systems Lab (ECSL), as part of an automated bridge-inspection project. 
+# Graph Bridge Generator
 
-The purpose of this code to generate and visualize graphs of arbitrary size and density, and to generate graphs designed to follow the layout of steel-truss bridges. It can be used to generate an arbitrary large dataset of graphs or bridge-graphs of desired size and density for use in machine learning.
+This code helps users generate and visualize graphs that closely represent real steel-truss bridge structures. 
+It can be used to generate an arbitrary large dataset of bridge-graphs of desired size for graph theory projects.
 
-![alt text](https://raw.githubusercontent.com/nicholasharris/Graph-and-Bridge-Generator/master/graph1.png)
+![alt text](img/graph1.png)
 
-![alt text](https://raw.githubusercontent.com/nicholasharris/Graph-and-Bridge-Generator/master/graph.png)
+## Getting started
+
+### Dependencies
+
+* [Python3](https://www.python.org/downloads/) This code runs has successfully ran with various versions of Python. Alternate versions of Python may work but I cannot guarantee flawless execution.
+* [MatPlotLib](https://matplotlib.org/stable/users/installing.html)
+```
+python -m pip install -U pip
+python -m pip install -U matplotlib
+```
+
+### Running the code
+
+From within the project directory:
+- [NUM_VERTICES]: is the number of vertices in the graph. Must be greater than 18.
+- [DENSITY]: how dense the bridge is. Must be some value between 0-1.
+- [IS_WINDY]: (true/false) if graph should have windy edge costs.
+- [IS_BRIDGE]: (true/false) if graph should represent a bridge.
+- [OUTPUT_FILE]: the string name of a file path including the desired filename.
+
+```
+python graph_generator.py [NUM_VERTICES] [DENSITY] [IS_WINDY] [IS_BRIDGE] [OUTPUT_FILE]
+```
+
+Example command line argument 
+```
+python graph_generator.py 20 0.1 true true bridge.csv
+```
 
 
-The command line arguments of the graph_generator.py code are explained within the comments of the file. They allow you to generate graphs of arbitrary size and density, make a windy or non-windy graph, decide if the graph should take on the form of a steel-truss bridge, and control the file name the graph will be saved in (.csv format we have used in all arc routing work at ECSL). A visualization of the topology of the generated graph drawn in pyplot will also be saved as a .png 
+## Meta
 
-The dataset_generator.py lets you generate many graphs at once with your chosen set of parameters. Generating large datasets takes a non-trivial amount of time - approximately 1 second per graph - so a very large data set may take a few tens of minutes to be created.
-
+Created for University of Nevada, Reno's [Evolutionary Computing Systems Lab (ECSL)](https://ecsl.cse.unr.edu/), as part of an [bridge inspection simulation and optimization project](https://ecsl.cse.unr.edu/projects/bridge_inspection/index.html). 
+Forked repository originally created by [Nicholas Harris](https://github.com/nicholasharris/Graph-and-Bridge-Generator).
