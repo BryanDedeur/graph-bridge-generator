@@ -1,7 +1,7 @@
-# Graph Bridge Generator
+# Python Graph Bridge Generator
 
-This code helps users generate and visualize graphs that closely represent real steel-truss bridge structures. 
-It can be used to generate an arbitrary large dataset of bridge-graphs of desired size for graph theory projects.
+Generate and visualize graphs that closely represent real steel-truss bridge structures. 
+The code can be used to generate an arbitrary large dataset of bridge-graphs of desired size for graph theory projects.
 
 ![alt text](img/graph1.png)
 
@@ -9,11 +9,12 @@ It can be used to generate an arbitrary large dataset of bridge-graphs of desire
 
 ### Dependencies
 
-* [Python3](https://www.python.org/downloads/) This code runs successfully with various versions of Python. Alternate versions of Python may work but I cannot guarantee flawless execution.
-* [MatPlotLib](https://matplotlib.org/stable/users/installing.html)
+* [Python3](https://www.python.org/downloads/) Versions of Python below v3 might work but I cannot guarantee flawless execution.
+* [MatPlotLib](https://matplotlib.org/stable/users/installing.html) For visuals
+* [Numpy](https://numpy.org/install/) For vectors
 ```
 python -m pip install -U pip
-python -m pip install -U matplotlib
+python -m pip install -U matplotlib numpy
 ```
 
 ### Running the code
