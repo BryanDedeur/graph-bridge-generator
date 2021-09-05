@@ -30,7 +30,7 @@ From within the project directory:
 python graph_generator.py [NUM_VERTICES] [DENSITY] [IS_WINDY] [IS_BRIDGE] [OUTPUT_FILE]
 ```
 
-Example command line argument 
+Example
 ```
 python graph_generator.py 20 0.1 true true bridge.csv
 ```
