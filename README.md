@@ -3,7 +3,7 @@
 Generate and visualize graphs that closely represent real steel-truss bridge structures. 
 The code can be used to generate an arbitrary large dataset of bridge-graphs of desired size for graph theory projects.
 
-![alt text](img/graph1.png)
+![alt text](img/4-seg-pratt.png)
 
 ## Getting started
 

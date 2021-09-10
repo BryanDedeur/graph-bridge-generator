@@ -9,15 +9,14 @@
 # ---------------------------------------------
 
 import sys
-import matplotlib.pyplot as plt
 from helpers import *
 from bridge import *
 
 BRIDGE_NAME = "bridge"
 BRIDGE_TYPE_ID = 0      # [0] pratt [1] parker [2] k-truss [3] howe {the truss structure}
+SEGMENTS = 4            # [0] 10 segment bridge {the number of repeating sections along the length of the bridge}
 VERTICES_CAP = 0        # [0] no cap [>0] capped {the bridge will stop generating when we hit this number of vertices}
 EDGES_CAP = 0           # [0] no cap [>0] capped {the bridge will stop generating when we hit this number of edges}
-SEGMENTS = 0            # [0] 10 segment bridge {the number of repeating sections along the length of the bridge}
 ONE_SIDED = True
 THREE_DIM = False       # [false] will output 2D coordinates [true] will output 3D coordinates
 
@@ -33,7 +32,9 @@ def parse_args():
 parse_args()
 
 bridge = Bridge()
-bridge.make_bridge(BRIDGE_TYPE_ID)
+bridge.make_bridge(BRIDGE_TYPE_ID, SEGMENTS)
+bridge.visualize()
+
 
 
 
