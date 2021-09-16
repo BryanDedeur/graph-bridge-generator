@@ -80,6 +80,41 @@ class Bridge:
 
     def visualize(self):
         # plotting things
+        fig = plt.figure(figsize=(4,4))
+        ax = fig.add_subplot(111)
+        #plt.autoscale(False)
+
+        #fig.suptitle((str(self.max_segments - 3) + ' Segment ' + self.type_name), fontsize=14)
+        ax.axes.xaxis.set_visible(False)
+        ax.axes.yaxis.set_visible(False)
+
+        ax.axes.xaxis.set_ticklabels([])
+        ax.axes.yaxis.set_ticklabels([])
+
+        # plot the vertices
+        x = []
+        y = []
+        for v in range(len(self.vertices)):
+            x.append(self.vertices[v][0])
+            y.append(self.vertices[v][1])
+            ax.annotate(str(v), (self.vertices[v][0], self.vertices[v][1]))
+
+        #ax.scatter(x, y)
+
+        # plot the edges
+        for e in range(len(self.edges)):
+            x = []
+            x.append(self.vertices[self.edges[e][0]][0])
+            x.append(self.vertices[self.edges[e][1]][0])
+            y = []
+            y.append(self.vertices[self.edges[e][0]][1])
+            y.append(self.vertices[self.edges[e][1]][1])
+            ax.plot(x, y, color="gray")
+
+        plt.show()
+
+    def visualize3D(self):
+        # plotting things
         fig = plt.figure(figsize=(8,8))
         ax = fig.add_subplot(111, projection='3d')
 

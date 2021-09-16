@@ -8,11 +8,14 @@
 #   Oiginal Creator: Nicholas Harris
 # ---------------------------------------------
 
-import sys
 from helpers import *
 from bridge import *
+import sys, getopt
+
 
 BRIDGE_NAME = "bridge"
+GRAPH_FILE = ""
+COORD_FILE = ""
 BRIDGE_TYPE_ID = 0      # [0] pratt [1] parker [2] k-truss [3] howe {the truss structure}
 SEGMENTS = 4            # [0] 10 segment bridge {the number of repeating sections along the length of the bridge}
 VERTICES_CAP = 0        # [0] no cap [>0] capped {the bridge will stop generating when we hit this number of vertices}
@@ -20,20 +23,38 @@ EDGES_CAP = 0           # [0] no cap [>0] capped {the bridge will stop generatin
 ONE_SIDED = True
 THREE_DIM = False       # [false] will output 2D coordinates [true] will output 3D coordinates
 
-#read arguments passed from command line
+def usage():
+    print("TODO")
+
 def parse_args():
-#    NUM_VERTICES =  if len(sys.argv) > 0 : int(sys.argv[1])  
-#    DENSITY =       0.0     if len(sys.argv) > 1     else float(sys.argv[2])
-#    WINDY =         False   if len(sys.argv) > 2     else str_to_bool(sys.argv[3])
-#    MAKE_BRIDGE =   True    if len(sys.argv) > 3     else str_to_bool(sys.argv[4])
-#    OUTPUT_FILE =   "graph" if len(sys.argv) > 4     else sys.argv[5]
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "ho:v:g:", ["help", "graph", "coords"])
+    except getopt.GetoptError as err:
+        print(err)
+        usage()
+        sys.exit(2)
+    for o, a in opts:
+        if o in ("-h", "--help"):
+            usage()
+            sys.exit()
+        elif o in ("-g", "--graph"):
+            GRAPH_FILE = a
+        elif o in ("--coords"):
+            COORD_FILE = a
+        else:
+            continue
     return 0
 
 parse_args()
 
+
 bridge = Bridge()
+if GRAPH_FILE != "":
+    bridge.load(GRAPH_FILE, COORD_FILE)
 bridge.make_bridge(BRIDGE_TYPE_ID, SEGMENTS)
 bridge.visualize()
+
+
 
 
 
