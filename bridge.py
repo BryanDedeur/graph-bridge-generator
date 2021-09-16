@@ -174,8 +174,8 @@ class Bridge:
                 y.append(self.vertices[vertex][1] + random.uniform(-self.offset, self.offset))
                 if v < len(self.tours[t]) - 1:
                     # pull the tours close to the edge
-                    x.append(self.vertices[vertex][0] + ((self.vertices[self.tours[t][v + 1]][0] - self.vertices[vertex][0]) / 2) + random.uniform(-self.offset, self.offset))
-                    y.append(self.vertices[vertex][1] + ((self.vertices[self.tours[t][v + 1]][1] - self.vertices[vertex][1]) / 2) + random.uniform(-self.offset, self.offset))
+                    x.append(self.vertices[vertex][0] + ((self.vertices[self.tours[t][v + 1]][0] - self.vertices[vertex][0]) / 2))
+                    y.append(self.vertices[vertex][1] + ((self.vertices[self.tours[t][v + 1]][1] - self.vertices[vertex][1]) / 2))
 
             f, u = interpolate.splprep([x, y], s=0, per=True)
             #create interpolated lists of points
@@ -185,15 +185,12 @@ class Bridge:
         # plot the overlap
         ax[len(self.tours)].title.set_text('Overlap')
         self.plot_graph(ax[len(self.tours)], False)
-        x = []
-        y = []
         for i in range(len(self.edge_visits)):
             if self.edge_visits[i] > 1:
                 x = (self.vertices[self.edges[i][0]][0], self.vertices[self.edges[i][1]][0])
                 y = (self.vertices[self.edges[i][0]][1], self.vertices[self.edges[i][1]][1])
                 ax[len(self.tours)].annotate(self.edge_visits[i], ((x[0] + (x[1] - x[0]) / 2), (y[0] + (y[1] - y[0]) / 2)))
-
-            ax[len(self.tours)].plot(x, y, color=(1, .2, .9))
+                ax[len(self.tours)].plot(x, y, color=(1 - (1/self.edge_visits[i]), .2, .9 - (1/self.edge_visits[i])))
 
 
         plt.show()
