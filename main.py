@@ -47,11 +47,20 @@ def parse_args():
 
 parse_args()
 
+vertices, edges, weights = load_graph_file("truss-example1.csv")
+vertices = load_obj_file("truss-example.obj")
+vertex_routes = load_routes_file("truss-example1-2r-route.txt")
 
 bridge = Bridge()
-if GRAPH_FILE != "":
-    bridge.load(GRAPH_FILE, COORD_FILE)
-bridge.make_bridge(BRIDGE_TYPE_ID, SEGMENTS)
+# load or create a bridge
+if len(vertices) > 0 or len(edges) > 0:
+    bridge.load_data(vertices, edges, weights)
+else:
+    bridge.make_bridge(BRIDGE_TYPE_ID, SEGMENTS)
+
+# load routes
+bridge.load_tours(vertex_routes)
+
 bridge.visualize()
 
 
