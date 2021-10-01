@@ -36,8 +36,8 @@ class Bridge:
 
     # routing
     tours = []
-    robot_colors = ["red", "blue", "green", "orange"]
-    offset = 0.15
+    robot_colors = ["red", "blue", "green", "orange", "magenta"]
+    offset = 0
     edge_visits = []
 
     ## ------------------------------------------------------- GENERAL FUNCTIONS -------------------------------------------------------- ##
@@ -143,6 +143,13 @@ class Bridge:
         ax.axes.yaxis.set_visible(False)
         ax.axes.xaxis.set_ticklabels([])
         ax.axes.yaxis.set_ticklabels([])
+        # plot the edges
+        for e in range(len(self.edges)):
+            x = (self.vertices[self.edges[e][0]][0], self.vertices[self.edges[e][1]][0])
+            y = (self.vertices[self.edges[e][0]][1], self.vertices[self.edges[e][1]][1])
+            ax.plot(x, y, color="gray")
+            if annotate_vertices:
+                ax.annotate(str(e), (x[1] + (x[0] - x[1])/2, y[1] + (y[0] - y[1])/2) ,ha='center', color = "gray")
         # plot the vertices
         x = []
         y = []
@@ -150,21 +157,19 @@ class Bridge:
             x.append(self.vertices[v][0])
             y.append(self.vertices[v][1])
             if annotate_vertices:
-                ax.annotate(str(v), (self.vertices[v][0], self.vertices[v][1]))
+                ax.annotate(str(v), (self.vertices[v][0], self.vertices[v][1]),ha='center')
         ax.scatter(x, y)
-        # plot the edges
-        for e in range(len(self.edges)):
-            x = (self.vertices[self.edges[e][0]][0], self.vertices[self.edges[e][1]][0])
-            y = (self.vertices[self.edges[e][0]][1], self.vertices[self.edges[e][1]][1])
-            ax.plot(x, y, color="gray")
 
+    # for showing routes on graphs
     def visualize(self):
         # plotting things
-        fig, ax = plt.subplots(len(self.tours) + 1, figsize=(4, 8))
+        fig, ax = plt.subplots(len(self.tours) + 2, figsize=(4, 8))
         #fig.suptitle('Something')
+        ax[0].title.set_text('Graph')
+        self.plot_graph(ax[0], True)
         for t in range(len(self.tours)):
-            self.plot_graph(ax[t], True)
-            ax[t].title.set_text('R'+ str(t))
+            self.plot_graph(ax[t + 1], False)
+            ax[t + 1].title.set_text('R'+ str(t))
             # plot the tours
             x = []
             y = []
@@ -180,17 +185,18 @@ class Bridge:
             f, u = interpolate.splprep([x, y], s=0, per=True)
             #create interpolated lists of points
             xint, yint = interpolate.splev(np.linspace(0, 1, 500), f)
-            ax[t].plot(xint, yint, color = self.robot_colors[t])
+            ax[t + 1].plot(xint, yint, color = self.robot_colors[t])
 
         # plot the overlap
-        ax[len(self.tours)].title.set_text('Overlap')
-        self.plot_graph(ax[len(self.tours)], False)
+        lastGraph = len(self.tours) + 1
+        ax[lastGraph].title.set_text('Overlap')
+        self.plot_graph(ax[lastGraph], False)
         for i in range(len(self.edge_visits)):
             if self.edge_visits[i] > 1:
                 x = (self.vertices[self.edges[i][0]][0], self.vertices[self.edges[i][1]][0])
                 y = (self.vertices[self.edges[i][0]][1], self.vertices[self.edges[i][1]][1])
-                ax[len(self.tours)].annotate(self.edge_visits[i], ((x[0] + (x[1] - x[0]) / 2), (y[0] + (y[1] - y[0]) / 2)))
-                ax[len(self.tours)].plot(x, y, color=(1 - (1/self.edge_visits[i]), .2, .9 - (1/self.edge_visits[i])))
+                ax[lastGraph].annotate(self.edge_visits[i], ((x[0] + (x[1] - x[0]) / 2), (y[0] + (y[1] - y[0]) / 2)))
+                ax[lastGraph].plot(x, y, color=(1 - (1/self.edge_visits[i]), .2, .9 - (1/self.edge_visits[i])))
 
 
         plt.show()
