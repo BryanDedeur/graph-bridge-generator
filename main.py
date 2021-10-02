@@ -47,9 +47,10 @@ def parse_args():
 
 parse_args()
 
-vertices, edges, weights = load_graph_file("truss-example1.csv")
-vertices = load_obj_file("truss-example.obj")
-vertex_routes = load_routes_file("truss-example1-2r-route.txt")
+#vertices, edges, weights = load_graph_file("truss-example1.csv")
+#vertices = load_obj_file("truss-example.obj")
+vertices, edges, weights = load_graph_file("pratt-truss-bridge-4-segment.json")
+vertex_routes = load_routes_file("decoded-route-pratt-truss-bridge-4-segment-3R-pops100-200gens-chc-ox-inv.tsv")
 
 bridge = Bridge()
 # load or create a bridge
@@ -60,6 +61,7 @@ else:
 
 # load routes
 bridge.load_tours(vertex_routes)
+bridge.graph_name = "pratt-truss-bridge-4-segment"
 
 bridge.visualize()
 

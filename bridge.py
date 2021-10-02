@@ -30,15 +30,17 @@ class Bridge:
     height = 2
     segment_length = 1
     type_name = "Pratt"
+    graph_name = ""
 
     # graph variables
-    circle_radius = 4;
+    circle_radius = 4
 
     # routing
     tours = []
     robot_colors = ["red", "blue", "green", "orange", "magenta"]
     offset = 0
     edge_visits = []
+    max_line_thickness = 4
 
     ## ------------------------------------------------------- GENERAL FUNCTIONS -------------------------------------------------------- ##
 
@@ -149,7 +151,9 @@ class Bridge:
             y = (self.vertices[self.edges[e][0]][1], self.vertices[self.edges[e][1]][1])
             ax.plot(x, y, color="gray")
             if annotate_vertices:
-                ax.annotate(str(e), (x[1] + (x[0] - x[1])/2, y[1] + (y[0] - y[1])/2) ,ha='center', color = "gray")
+                xy = (x[1] + (x[0] - x[1])/2, y[1] + (y[0] - y[1])/2)
+                ax.annotate(str(e), xy ,ha='center',va='center', color = "white",size = 6,
+                            bbox=dict(boxstyle="circle,pad=0.2", fc="gray", ec="b", lw=0))
         # plot the vertices
         x = []
         y = []
@@ -157,14 +161,15 @@ class Bridge:
             x.append(self.vertices[v][0])
             y.append(self.vertices[v][1])
             if annotate_vertices:
-                ax.annotate(str(v), (self.vertices[v][0], self.vertices[v][1]),ha='center')
-        ax.scatter(x, y)
+                xy = (self.vertices[v][0],self.vertices[v][1])
+                ax.annotate(str(v), xy ,ha='center',va='center', color = "white",size = 6,
+                            bbox=dict(boxstyle="circle,pad=0.2", fc="teal", ec="b", lw=0))
 
     # for showing routes on graphs
     def visualize(self):
         # plotting things
         fig, ax = plt.subplots(len(self.tours) + 2, figsize=(4, 8))
-        #fig.suptitle('Something')
+        fig.suptitle(self.graph_name)
         ax[0].title.set_text('Graph')
         self.plot_graph(ax[0], True)
         for t in range(len(self.tours)):
@@ -196,8 +201,7 @@ class Bridge:
                 x = (self.vertices[self.edges[i][0]][0], self.vertices[self.edges[i][1]][0])
                 y = (self.vertices[self.edges[i][0]][1], self.vertices[self.edges[i][1]][1])
                 ax[lastGraph].annotate(self.edge_visits[i], ((x[0] + (x[1] - x[0]) / 2), (y[0] + (y[1] - y[0]) / 2)))
-                ax[lastGraph].plot(x, y, color=(1 - (1/self.edge_visits[i]), .2, .9 - (1/self.edge_visits[i])))
-
+                ax[lastGraph].plot(x, y, color=(1 - (1/self.edge_visits[i]), .2, .9 - (1/self.edge_visits[i])), linewidth=self.edge_visits[i])
 
         plt.show()
 
