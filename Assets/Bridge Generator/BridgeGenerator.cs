@@ -9,15 +9,14 @@ using SFB; // Standalone file browser package
 // Bridge generator constructs verious bridges with various parameters
 
 [Serializable]
-public class BridgeGenerator : Generator
+public class BridgeGenerator : MonoBehaviour
 {
     public bool arched = false;
-    public string objFile = "Assets/BridgeBuilder/test-bridge.obj";
-    public string outputPath = "";
 
     public GameObject defaultVertex;
     public GameObject defaultEdge;
 
+    public float totalCost = 0;
     public List<BridgeVertex> vertices;
     public List<BridgeEdge> edges;
 
@@ -40,18 +39,19 @@ public class BridgeGenerator : Generator
     public bool mirrorX = true;
 
     // private members variables
-    private string bridgeName = "";
+    public string bridgeName = "";
+    public GameObject rootObject;
 
-    public override void Awake()
+    public void Awake()
     {
-        rootObjectName = "Bridge";
-        base.Awake();
+        rootObject = new GameObject();
+        rootObject.name = "Bridge";
+        SetBridgeType(((int)bridgeType));
         Generate();
     }
 
-    public override void Clear()
+    public void Clear()
     {
-        // TODO Prompt are you sure?
         foreach (BridgeVertex bv in vertices)
         {
             Destroy(bv.gameObject);
@@ -62,28 +62,41 @@ public class BridgeGenerator : Generator
             Destroy(be.gameObject);
         }
         edges.Clear();
-
-        base.Clear();
     }
 
-    public void SaveBridge()
+    public void SaveToObj()
     {
-        var path = StandaloneFileBrowser.SaveFilePanel("Save File", "", bridgeName, "json");
+        var path = StandaloneFileBrowser.SaveFilePanel("Save File", "", bridgeName, "obj");
 
-        File.WriteAllText(path, GetHumanReadableJSON());
-
-
-        //ShowOutputFile();
+        string output = "";
+        foreach(BridgeVertex vertex in vertices)
+        {
+            Vector2 vec2 = vertex.Get2DPos();
+            output += "v " + vec2.x + " " + vec2.y + " 0" + "\n";
+        }
+        File.WriteAllText(path, output);
     }
-
-    public void SaveOneFaceOfBridge()
+    public void LoadFromOBJ(string file_path)
     {
-        var path = StandaloneFileBrowser.SaveFilePanel("Save File", "", bridgeName, "json");
+        StreamReader istream = new StreamReader(file_path);
+        // todo verify files exists and all that jazz
+        while (!istream.EndOfStream)
+        {
+            string ln = istream.ReadLine();
+            string[] tokens = ln.Split(' ');
+            if (tokens[0] == "v")
+            {
+                // todo verify tokens are all valid floats
+                CreateVertex(new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])));
+            }
+            else if (tokens[0] == "l")
+            {
+                // todo verify tokens are all valid floats
+                CreateEdge(vertices[Convert.ToInt32(tokens[1]) - 1], vertices[Convert.ToInt32(tokens[2]) - 1]);
+            }
+        }
 
-        File.WriteAllText(path, GetHumanReadableJSON());
-
-
-        //ShowOutputFile();
+        istream.Close();
     }
 
     public void SetNumSegments(string segments)
@@ -117,79 +130,31 @@ public class BridgeGenerator : Generator
         {
             case 0:
                 bridgeType = BridgeType.Pratt;
+                bridgeName = "pratt-l";
                 break;
             case 1:
                 bridgeType = BridgeType.Howe;
+                bridgeName = "howe-l";
                 break;
             case 2:
                 bridgeType = BridgeType.Warren;
+                bridgeName = "warren-l";
                 break;
             case 3:
                 bridgeType = BridgeType.KTruss;
+                bridgeName = "ktruss-l";
                 break;
         }
-    }
-
-    void ShowOutputFile()
-    {
-
-    }
-
-    private string GetHumanReadableJSON()
-    {
-        string data = "{\n";
-        data += "\t\"name\": \"" + bridgeName + "\",\n";
-        data += "\t\"type\": \"" + bridgeType + "\",\n";
-        data += "\t\"numVertices\": " + vertices.Count + ",\n";
-        data += "\t\"numEdges\": " + edges.Count + ",\n";
-        data += "\t\"length\": " + segmentSpacing * Mathf.Ceil(numSegments) + ",\n";
-        data += "\t\"width\": " + surfaceWidth + ",\n";
-        data += "\t\"height\": " + bridgeHeight + ",\n";
-        // vertices
-        data += "\t\"vertices\": [\n";
-        int count = 0;
-        foreach (var vertex in vertices)
-        {
-            data += vertex.GetHumanReadableJSON();
-            count++;
-            if (count == vertices.Count)
-                data += "\n";
-            else
-                data += ",\n";
-        }
-        data += "],\n";
-        // edges
-        data += "\t\"edges\": [\n";
-        count = 0;
-        foreach (var edge in edges)
-        {
-            data += edge.GetHumanReadableJSON();
-            count++;
-            if (count == edges.Count)
-                data += "\n";
-            else
-                data += ",\n";
-        }
-        data += "]\n";
-        data += "}";
-        return data;
     }
 
     // ------------------------------------------- GENERATING BRIDGES ----------------------------------- //
 
-    public override void Generate()
+    public void Generate()
     {
-        base.Generate();
         numSegments = (int) Mathf.Ceil(numSegments / 2) * 2;
         surfaceWidth = bridgeWidth + trussWidth;
         bridgeLength = numSegments * segmentSpacing;
 
-        if (arched)
-            bridgeName = "arched-" + bridgeType + "-truss-bridge-" + numSegments.ToString() + "-segment";
-        else
-            bridgeName = bridgeType + "-truss-bridge-" + numSegments.ToString() + "-segment";
-
-        print("Generating: " + bridgeName);
         // get positive z position on one side of road
         float zPos = surfaceWidth / 2.0f;
 
@@ -474,6 +439,7 @@ public class BridgeGenerator : Generator
         be.v2 = vertex2;
         be.cost = length;
         edges.Add(be);
+        totalCost += be.cost;
 
         // update vertices
         vertex1.edges.Add(be);
@@ -523,43 +489,4 @@ public class BridgeGenerator : Generator
 
         return CreateEdge(vertex1, vertex2);
     }
-
-    public void Select()
-    {
-
-    }
-
-    public void RemoveVertex(BridgeVertex vertex)
-    {
-        // remove vertex from list
-        // remove connecting edges
-    }
-
-    public void RemoveEdge(BridgeEdge edge)
-    {
-        // remove edge from list
-    }
-
-    public void LoadFromOBJ(string file_path)
-    {
-        StreamReader istream = new StreamReader(file_path);
-        // todo verify files exists and all that jazz
-        while (!istream.EndOfStream)
-        {
-            string ln = istream.ReadLine();
-            string[] tokens = ln.Split(' ');
-            if (tokens[0] == "v")
-            {
-                // todo verify tokens are all valid floats
-                CreateVertex(new Vector3(float.Parse(tokens[1]), float.Parse(tokens[2]), float.Parse(tokens[3])));
-            } else if (tokens[0] == "l") {
-                // todo verify tokens are all valid floats
-                CreateEdge(vertices[Convert.ToInt32(tokens[1]) - 1], vertices[Convert.ToInt32(tokens[2]) - 1]);
-            }
-        }
-
-        istream.Close();
-    }
-
-
 }

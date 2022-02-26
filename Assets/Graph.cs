@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SFB; // Standalone file browser package
+using System;
+using System.IO;
+
 
 public class Graph : MonoBehaviour
 {
@@ -9,18 +13,44 @@ public class Graph : MonoBehaviour
 
     public List<List<Tour>> cachedDijkstras;
 
+    public BridgeGenerator bg;
+
     public void Awake()
     {
         adjacencyMatrix = new List<List<float>>();
         edgeList = new Dictionary<(int, int), int>();
         cachedDijkstras = new List<List<Tour>>();
     }
+
+    public void Start()
+    {
+        foreach (BridgeEdge edge in bg.edges)
+        {
+            AddEdge(edge.id, edge.v1.id, edge.v2.id, edge.cost);
+        }
+    }
     public void Clear()
     {
         adjacencyMatrix.Clear();
         edgeList.Clear();
         cachedDijkstras.Clear();
+    }
 
+    public void Save()
+    {
+        var path = StandaloneFileBrowser.SaveFilePanel("Save File", "", bg.bridgeName, "csv");
+        string str = "";
+        for (int i = 0; i < adjacencyMatrix.Count; i++)
+        {
+            for (int j = 0; j < adjacencyMatrix[i].Count; j++)
+            {
+                str += adjacencyMatrix[i][j].ToString();
+                if (j != adjacencyMatrix[i].Count - 1)
+                    str += ",";
+            }
+            str += "\n";
+        }
+        File.WriteAllText(path, str);
     }
 
     public int SizeV()
